@@ -85,7 +85,7 @@ describe("Auth Test",()=>{
     test('deletar usuário com sucesso', async () => {
       await deleteUser(req, res);
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalled();
+      expect(res.json).toHaveBeenCalledWith({ message: "Usuário deletado" });
     });
 
   })

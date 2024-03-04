@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { getUsers } from "../controllers/usersController";
+import { getUsers,createChat } from "../controllers/usersController";
 
 const router=Router()
 
-router.get('/userName:',getUsers)
-router.post('/creatChat',getUsers)
+router.get('/:userName',getUsers)
+router.post('/creatChat',createChat)
 
 export default router

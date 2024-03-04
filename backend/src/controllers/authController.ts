@@ -89,7 +89,12 @@ export async function deleteUser(req: propsLogin, res: any) {
     }
 
     if (user.rows[0].password === password) {
-      await db.query('DELETE FROM users WHERE id = $1', [user.rows[0].id])
+      await db.query('BEGIN');
+      await db.query('DELETE FROM messages WHERE sender_id = $1', [user.rows[0].id]);
+      await db.query('DELETE FROM chat WHERE user1_id = $1 OR user2_id = $1', [user.rows[0].id]);
+      await db.query('DELETE FROM users WHERE id = $1', [user.rows[0].id]);
+      await db.query('COMMIT');
+
       res.status(200).json({ message: "Usuário deletado" });
     } else {
       res.status(422).json({ message: "Senha inválida" });
