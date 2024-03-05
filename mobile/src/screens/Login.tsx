@@ -1,15 +1,10 @@
 import { Button, ButtonText, Center, Divider, Input, InputField, Text } from "@gluestack-ui/themed";
 import { useState } from "react";
-
-interface PropsData{
-  name: string;
-  email: string;
-  password: string;
-}
+import { UserProps } from "../context/intefaces";
 
 export function Login() {
   const [type, setType] = useState<"Login"|"Register">("Login");
-  const [data,setData] = useState<PropsData>({
+  const [data,setData] = useState<UserProps>({
     name: "",
     email: "",
     password: ""
@@ -20,7 +15,7 @@ export function Login() {
   return(
     <Center h='100%' p='$10' gap={10}>
       <Text size="xl">{type}</Text>
-
+      <br/>
       {type === "Login" ? null : 
         <Input
           variant="outline"
@@ -50,7 +45,7 @@ export function Login() {
         variant="outline"
         size="lg"
         w="90%"
-        isInvalid={type== "Login"? false : data.name.length < 6}
+        isInvalid={type== "Login"? false : data.name.length < 6 ? true : false}
       >
         <InputField 
           value={data.password} 
@@ -59,7 +54,7 @@ export function Login() {
       </Input>
       
       <Button size="lg" w="90%" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} 
-        onClick={()=>console.log(data)}
+        onPress={()=>console.log(data)}
       >
         <ButtonText>{type}</ButtonText>
       </Button>
@@ -67,7 +62,7 @@ export function Login() {
       <Divider my="$0.5" />
 
       <Button size="lg" variant="link" action="primary" isDisabled={false} isFocusVisible={false} 
-        onClick={() => setType( type == "Login" ? "Register" : "Login" )}
+        onPress={() => setType( type == "Login" ? "Register" : "Login" )}
       >
         <ButtonText>Mudar para {type}</ButtonText>
       </Button>
