@@ -1,8 +1,12 @@
 import { Button, ButtonText, Center, Divider, Input, InputField, Text } from "@gluestack-ui/themed";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { UserProps } from "../context/intefaces";
+import { ContextArea } from "../context/context";
 
 export function Login() {
+
+  const { handleAuthContext } = useContext(ContextArea)
+
   const [type, setType] = useState<"Login"|"Register">("Login");
   const [data,setData] = useState<UserProps>({
     name: "",
@@ -11,6 +15,7 @@ export function Login() {
   })
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailValid = emailRegex.test(data.email) ? false : true
 
   return(
     <Center h='100%' p='$10' gap={10}>
@@ -34,7 +39,7 @@ export function Login() {
         variant="outline"
         size="lg"
         w="90%"
-        isInvalid={emailRegex.test(data.email)}
+        isInvalid={emailValid}
       >
         <InputField 
           value={data.email} 
@@ -45,7 +50,7 @@ export function Login() {
         variant="outline"
         size="lg"
         w="90%"
-        isInvalid={type== "Login"? false : data.name.length < 6 ? true : false}
+        isInvalid={type== "Login"? false : data.password.length < 6 ? true : false}
       >
         <InputField 
           value={data.password} 
@@ -53,8 +58,8 @@ export function Login() {
           placeholder="Enter Password" secureTextEntry={true}/>
       </Input>
       
-      <Button size="lg" w="90%" variant="solid" action="primary" isDisabled={false} isFocusVisible={false} 
-        onPress={()=>console.log(data)}
+      <Button size="lg" w="90%" variant="solid" action="primary" isFocusVisible={false} 
+        onPress={()=>handleAuthContext(type, data)}
       >
         <ButtonText>{type}</ButtonText>
       </Button>

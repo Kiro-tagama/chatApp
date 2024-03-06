@@ -4,18 +4,19 @@ import { GluestackUIProvider } from '@gluestack-ui/themed';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { ContextProvider } from './src/context/context';
+import { ContextArea, ContextProvider } from './src/context/context';
 import { Login } from './src/screens/Login';
 import { Home } from './src/screens/Home';
 import { Chat } from './src/screens/Chat';
+import { useContext } from 'react';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const user=true;
+  const {userData} = useContext(ContextArea)
   const Screens= (
     <Stack.Navigator initialRouteName="home" screenOptions={{headerShown:false}}>
-      {user == null ?
+      {userData == null ?
         <Stack.Screen name="login" component={Login} /> :
         <>
           <Stack.Screen name="home" component={Home} />

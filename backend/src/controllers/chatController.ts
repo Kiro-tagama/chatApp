@@ -1,9 +1,9 @@
 import { randomUUID } from "crypto";
 import { db } from "../data/db"
 
-export async function getChats(req: { params: { id: string; }; },res: any) {
+export async function getChats(req: { params: { userId: string; }; },res: any) {
   try {
-    const id = req.params.id
+    const id = req.params.userId
     
     const result = await db.query(`SELECT * FROM chat WHERE user1_id = $1 OR user2_id = $1`, [id]);
 

@@ -16,6 +16,7 @@
     "@legendapp/motion": "latest",
     "@react-navigation/native": "^6.1.14",
     "@react-navigation/native-stack": "^6.9.22",
+    "axios": "^1.6.7",
     "expo": "^50.0.3",
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",

@@ -3,7 +3,7 @@ import { getChats, getMenssage, postMessage } from "../controllers/chatControlle
 
 const router=Router()
 
-router.get('/userChat/:id',getChats)
+router.get('/userChat/:userId',getChats)
 router.get('/menssages/:chatId',getMenssage)
 router.post('/menssages/:chatId',postMessage)
 
