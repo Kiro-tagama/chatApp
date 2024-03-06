@@ -1,11 +1,17 @@
-import { createContext, useState } from "react";
-import { UserProps } from "./intefaces";
-import { handleAuthApi } from "./api";
+import { createContext, useEffect, useState } from "react";
+import { MessageProps, UserProps } from "./intefaces";
+import { getChatsList, getMenssagesList, handleAuthApi } from "./api";
 
 export const ContextArea= createContext({})
 
+interface ChatProps{
+  chatId:string
+  content: MessageProps[]
+}
+
 export function ContextProvider({children}:any) {
   const [userData, setUserData] = useState<UserProps|null>(null)
+  const [chatList, setChatList] = useState<ChatProps[]>([])
 
   async function handleAuthContext(type: "login"|"register"|"delete",data: UserProps){
     if (type === "login"){
@@ -22,6 +28,22 @@ export function ContextProvider({children}:any) {
       setUserData(null)
     }
   }
+
+  useEffect(() => {
+    if (userData !== null) {
+      async function getChatData() {
+        const chatIds = await getChatsList(userData.id);
+        const chatDataPromises = chatIds.map(async (chatId: string) => {
+          const messages = await getMenssagesList(chatId);
+          return { chatId, messages };
+        });
+        const chatData = await Promise.all(chatDataPromises);
+        setChatList([...chatList,chatData]);
+        
+      }
+      getChatData()
+    }
+  },[userData])
 
   
   return (

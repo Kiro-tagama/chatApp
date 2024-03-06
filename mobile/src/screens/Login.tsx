@@ -9,6 +9,7 @@ export function Login() {
 
   const [type, setType] = useState<"Login"|"Register">("Login");
   const [data,setData] = useState<UserProps>({
+    id:"",
     name: "",
     email: "",
     password: ""
@@ -59,7 +60,7 @@ export function Login() {
       </Input>
       
       <Button size="lg" w="90%" variant="solid" action="primary" isFocusVisible={false} 
-        onPress={()=>handleAuthContext(type, data)}
+        onPress={()=>{handleAuthContext(type.toLocaleLowerCase(), data)}}
       >
         <ButtonText>{type}</ButtonText>
       </Button>
