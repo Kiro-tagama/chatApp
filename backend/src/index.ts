@@ -15,7 +15,7 @@ const port = process.env.PORT || 3000;
 app.use(cors())
 app.use(bodyParser.json());
 
-app.get('/',(req,res)=>{res.status(100).send("Server ON")})
+app.get('/',(req,res)=>{res.status(200).send("Server ON")})
 
 const connectDB=()=>db.connect().then(_=>log("db conected")).catch(err=>{log("db off : "+ err);setTimeout(connectDB, 3000)})
 connectDB()

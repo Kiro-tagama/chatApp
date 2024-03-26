@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { MessageProps, UserProps } from "./intefaces";
-import { getChatsList, getMenssagesList, handleAuthApi } from "./api";
+import { getChatsList, getMenssagesList, handleAuthApi, testConnection } from "./api";
 
 export const ContextArea= createContext({})
 
@@ -30,6 +30,7 @@ export function ContextProvider({children}:any) {
   }
 
   useEffect(() => {
+    testConnection()
     if (userData !== null) {
       async function getChatData() {
         const chatIds = await getChatsList(userData.id);
@@ -43,9 +44,8 @@ export function ContextProvider({children}:any) {
       }
       getChatData()
     }
-  },[userData])
+  },[])
 
-  
   return (
     <ContextArea.Provider value={{
       userData,

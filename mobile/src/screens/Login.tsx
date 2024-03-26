@@ -21,7 +21,6 @@ export function Login() {
   return(
     <Center h='100%' p='$10' gap={10}>
       <Text size="xl">{type}</Text>
-      <br/>
       {type === "Login" ? null : 
         <Input
           variant="outline"

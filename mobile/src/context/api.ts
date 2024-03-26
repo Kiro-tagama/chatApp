@@ -19,17 +19,21 @@ const baseUser = {
   createChat: baseUrl +  'users/creatChat',
 }
 
+export async function testConnection(){
+  axios.get(baseUrl)
+  .then(res=>console.log(res.status))
+  .catch(err=>console.log(err));
+}
+
 export async function handleAuthApi(type: "login"|"register"|"delete",data: UserProps) {
   try {
-    const method = ()=>{
-      switch (type) {
-        case "login":return "get"
-        case "register":return "post"
-        case "delete":return "delete"
-      }
+    const method = {
+      login: "get",
+      register: "post",
+      delete: "delete"
     }
-
-    await axios[method()](baseAuth[type], data)
+    
+    await axios[method[type]](baseAuth[type], data)
     .then((res)=>res.data)
     .catch(err =>{
       console.log(err)
@@ -64,7 +68,6 @@ export async function createChat(user1Id:string, user2Id:string){
     return console.log(err)
   }
 }
-
 export async function getChatsList(userId:string){
   try{  
     axios.get(baseChat.getChat(userId))
