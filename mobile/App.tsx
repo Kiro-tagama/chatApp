@@ -14,6 +14,7 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const {userData} = useContext(ContextArea)
+  
   const Screens= (
     <Stack.Navigator initialRouteName="home" screenOptions={{headerShown:false}}>
       {userData == null ?
@@ -27,13 +28,13 @@ export default function App() {
   )
 
   return (
-    <ContextProvider>
     <GluestackUIProvider config={config}>
+      <ContextProvider>
       <NavigationContainer>
         {Screens}
       </NavigationContainer>
+      </ContextProvider>
     </GluestackUIProvider>
-    </ContextProvider>
   );
 }
 

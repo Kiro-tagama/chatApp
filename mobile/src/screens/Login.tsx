@@ -69,7 +69,7 @@ export function Login() {
       <Button size="lg" variant="link" action="primary" isDisabled={false} isFocusVisible={false} 
         onPress={() => setType( type == "Login" ? "Register" : "Login" )}
       >
-        <ButtonText>Mudar para {type}</ButtonText>
+        <ButtonText>Mudar para {type == "Login" ? "Register" : "Login" }</ButtonText>
       </Button>
       
     </Center>

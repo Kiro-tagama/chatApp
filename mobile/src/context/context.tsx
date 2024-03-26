@@ -20,7 +20,7 @@ export function ContextProvider({children}:any) {
     }
     if (type === "register"){
       await handleAuthApi(type, data)
-      const res = await handleAuthApi("login", data)
+      //const res = await handleAuthApi("login", data)
       setUserData(res)
     }
     if (type === "delete"){

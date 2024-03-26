@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 import { db } from "../data/db";
 
 interface propsLogin {
-  body: { 
+  params: { 
     email: string; 
     password: string; 
   };
@@ -38,8 +38,10 @@ function isValid(params: any, res: any, type: string) {
 }
 
 export async function login(req: propsLogin, res: any) {
+  console.log(req.params);
+  
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.params;
     if (!isValid(req, res, "login")) return;
 
     const user = await db.query('SELECT * FROM users WHERE email = $1', [email])
@@ -77,7 +79,7 @@ export async function register(req: propsRegister, res: any) {
   }
 }
 
-export async function deleteUser(req: propsLogin, res: any) {
+export async function deleteUser(req: propsRegister, res: any) {
   try {
     const { email, password } = req.body;
     if (!isValid(req, res, "login")) return;

@@ -1,7 +1,7 @@
 import axios from "axios"
 import { UserProps } from "./intefaces"
 
-const baseUrl = "http://localhost:3000/"
+const baseUrl = "https://potential-trout-j7w95r59gqqcxr-3000.app.github.dev/"
 
 const baseAuth = {
   login: baseUrl + "auth/login",        //get 
@@ -19,10 +19,15 @@ const baseUser = {
   createChat: baseUrl +  'users/creatChat',
 }
 
-export async function testConnection(){
-  axios.get(baseUrl)
-  .then(res=>console.log(res.status))
-  .catch(err=>console.log(err));
+export async function testConnection() {
+  try {
+    const response = await axios.get(baseUrl);
+    console.log('Status da conexão:', response.status);
+    return response.status; // Retornando o status da conexão
+  } catch (error) {
+    console.error('Erro ao testar a conexão:', error);
+    throw error; // Lançando o erro para que ele seja tratado externamente, se necessário
+  }
 }
 
 export async function handleAuthApi(type: "login"|"register"|"delete",data: UserProps) {
@@ -32,8 +37,11 @@ export async function handleAuthApi(type: "login"|"register"|"delete",data: User
       register: "post",
       delete: "delete"
     }
+    console.log(data);
+
+    const url = type === "login" ? `${baseAuth[type]}/${data.password}/${data.email}` : baseAuth[type]
     
-    await axios[method[type]](baseAuth[type], data)
+    await axios[method[type]](url, type === "login" ? null : data)
     .then((res)=>res.data)
     .catch(err =>{
       console.log(err)

@@ -12,7 +12,10 @@ import usersRouter from './routes/usersRouter'
 const app = express()
 const port = process.env.PORT || 3000;
 
-app.use(cors())
+app.use(cors({
+  origin: 'https://potential-trout-j7w95r59gqqcxr-19006.app.github.dev',
+  optionsSuccessStatus: 200 // Some browsers choke on 204
+}))
 app.use(bodyParser.json());
 
 app.get('/',(req,res)=>{res.status(200).send("Server ON")})
