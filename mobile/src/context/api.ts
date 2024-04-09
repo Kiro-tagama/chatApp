@@ -1,13 +1,7 @@
 import axios from "axios"
 import { UserProps } from "./intefaces"
 
-const baseUrl = "https://potential-trout-j7w95r59gqqcxr-3000.app.github.dev/"
-
-const baseAuth = {
-  login: baseUrl + "auth/login",        //get 
-  register: baseUrl + "auth/register",  //post
-  delete: baseUrl + "auth/deleteUser",  //delete
-}
+const baseUrl = "https://improved-space-funicular-grw6qxq6pqg3wpgr-3000.app.github.dev/"
 
 const baseChat = {
   getChat: (userId:string)=>baseUrl + 'chats/userChat/'+userId,
@@ -23,35 +17,13 @@ export async function testConnection() {
   try {
     const response = await axios.get(baseUrl);
     console.log('Status da conexão:', response.status);
-    return response.status; // Retornando o status da conexão
+    return response.status;
   } catch (error) {
     console.error('Erro ao testar a conexão:', error);
-    throw error; // Lançando o erro para que ele seja tratado externamente, se necessário
+    throw error;
   }
 }
 
-export async function handleAuthApi(type: "login"|"register"|"delete",data: UserProps) {
-  try {
-    const method = {
-      login: "get",
-      register: "post",
-      delete: "delete"
-    }
-    console.log(data);
-
-    const url = type === "login" ? `${baseAuth[type]}/${data.password}/${data.email}` : baseAuth[type]
-    
-    await axios[method[type]](url, type === "login" ? null : data)
-    .then((res)=>res.data)
-    .catch(err =>{
-      console.log(err)
-      return null
-    });
-
-  } catch (err) {
-    return console.log(err)
-  }
-}
 export async function findUser (userName:string) {
   try{  
     axios.get(baseUser.findUser(userName))

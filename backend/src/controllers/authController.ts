@@ -16,10 +16,10 @@ interface propsRegister {
   };
 }
 
-function isValid(params: any, res: any, type: string) {
-  const { email, password, name } = params.body;
+function isValid(req: any, res: any, type: string) { 
+  const { email, password, name } = req.body || req.params;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
+
   if (type !== "login" && (!name || name.length < 4)) {
     res.status(422).json({ message: "O nome deve ter pelo menos 4 caracteres" });
     return false;
@@ -38,11 +38,9 @@ function isValid(params: any, res: any, type: string) {
 }
 
 export async function login(req: propsLogin, res: any) {
-  console.log(req.params);
-  
   try {
     const { email, password } = req.params;
-    if (!isValid(req, res, "login")) return;
+    //if (!isValid(req, res, "login")) return;
 
     const user = await db.query('SELECT * FROM users WHERE email = $1', [email])
     if (user.rows.length === 0 || user.rows[0].password !== password) {

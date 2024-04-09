@@ -13,7 +13,7 @@ const app = express()
 const port = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: 'https://potential-trout-j7w95r59gqqcxr-19006.app.github.dev',
+  origin: '*',
   optionsSuccessStatus: 200 // Some browsers choke on 204
 }))
 app.use(bodyParser.json());
@@ -26,6 +26,18 @@ connectDB()
 app.use('/auth',authRoutes)
 app.use('/chats',chatRoutes)
 app.use('/users',usersRouter)
+
+app.get("/allUsers",async (req,res)=>{
+  try {
+    const result = await db.query(`SELECT id, name, email FROM users `)
+
+    result.rows.length == 0 ?
+      res.status(404).json({ message: "Nem um usuário encontrado" }) :
+      res.status(200).json(result.rows)
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+})
 
 app.listen(port, () => {
   console.log(`Server is running on port http://localhost:${port}/`);

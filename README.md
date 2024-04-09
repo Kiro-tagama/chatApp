@@ -7,3 +7,7 @@ backend feito com express js e docker (teste1 pronto)
 
 frontend feito em react (em desenvolvimento)
   - execute com `npm i` e `npm start`
+
+## ERROS
+
+-[ ] validate email backend

@@ -17,7 +17,7 @@ export default function App() {
   
   const Screens= (
     <Stack.Navigator initialRouteName="home" screenOptions={{headerShown:false}}>
-      {userData == null ?
+      {userData === null ?
         <Stack.Screen name="login" component={Login} /> :
         <>
           <Stack.Screen name="home" component={Home} />
