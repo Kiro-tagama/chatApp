@@ -1,8 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 import { MessageProps, UserProps } from "./intefaces";
-import { getChatsList, getMenssagesList, handleAuthApi, testConnection } from "./api";
+import { getChatsList, getMenssagesList, testConnection } from "./api";
 import { useToast } from '@gluestack-ui/themed';
-import { MyToast } from '../components/Toast.tsx'
+import { MyToast } from '../components/Toast'
 import axios from "axios"
 
 export const ContextArea= createContext({})
@@ -35,13 +35,14 @@ export function ContextProvider({children}:any) {
 
       const url = type === "login" ? `${baseAuth[type]}/${data.password}/${data.email}` : baseAuth[type]
       
+      // @ts-ignore
       await axios[method[type]](url, type === "login" ? null : data)
       .then(async res=>{
         if (type === "login") setUserData(res.data)
         if (type === "register") await handleAuthContext("login", data)
         if (type === "delete") setUserData(null)
       })
-      .catch(err=>{
+      .catch((err: { response: { data: { message: string; }; }; })=>{
         toast.show({
           placement: "top",
           render: ({ id }) => <MyToast id={id} type="error" message={err.response.data.message} />
@@ -53,21 +54,22 @@ export function ContextProvider({children}:any) {
     }
   }
 
+  async function getChatData() {
+    const chatIds = await getChatsList(userData.id);
+    const chatDataPromises = chatIds.map(async (chatId: string) => {
+      const messages = await getMenssagesList(chatId);
+      return { chatId, messages };
+    });
+    const chatData = await Promise.all(chatDataPromises);
+    setChatList([...chatList,chatData]);
+  }
+  
   useEffect(() => {
     testConnection()
-    if (userData !== null) {
-      async function getChatData() {
-        const chatIds = await getChatsList(userData.id);
-        const chatDataPromises = chatIds.map(async (chatId: string) => {
-          const messages = await getMenssagesList(chatId);
-          return { chatId, messages };
-        });
-        const chatData = await Promise.all(chatDataPromises);
-        setChatList([...chatList,chatData]);
-        
-      }
-      getChatData()
-    }
+     if (userData !== null) {
+       
+       getChatData()
+     }
   },[userData])
 
   return (

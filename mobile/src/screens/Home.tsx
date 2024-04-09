@@ -1,10 +1,16 @@
 import { Text, View, Input, InputField, Spinner, FlatList, Box, HStack, VStack, Button, ButtonText, AddIcon, ButtonIcon, Icon, TrashIcon } from "@gluestack-ui/themed";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UserProps } from "../context/intefaces";
 
 export function Home() {
   const [search,setSearch] = useState<string>("")
   const [chatList,setChatList] = useState<null | UserProps[] >(null)
+
+  useEffect(()=>{
+    search.length = 0 ?
+    setChatList() :
+    setChatList()
+  }, [chatList])
 
   return(
     <View p={10} h="100%">
