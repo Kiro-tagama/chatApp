@@ -4,6 +4,7 @@ import { getChatsList, getMenssagesList, testConnection } from "./api";
 import { useToast } from '@gluestack-ui/themed';
 import { MyToast } from '../components/Toast'
 import axios from "axios"
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const ContextArea= createContext({})
 
@@ -38,9 +39,16 @@ export function ContextProvider({children}:any) {
       // @ts-ignore
       await axios[method[type]](url, type === "login" ? null : data)
       .then(async res=>{
-        if (type === "login") setUserData(res.data)
+        if (type === "login") {
+          const jsonData =JSON.stringify(res.data)
+          await AsyncStorage.setItem('@userData', jsonData);
+          setUserData(res.data)
+        }
         if (type === "register") await handleAuthContext("login", data)
-        if (type === "delete") setUserData(null)
+        if (type === "delete") {
+          setUserData(null)
+          await AsyncStorage.removeItem('@userData')
+        }
       })
       .catch((err: { response: { data: { message: string; }; }; })=>{
         toast.show({
@@ -55,7 +63,7 @@ export function ContextProvider({children}:any) {
   }
 
   async function getChatData() {
-    const chatIds = await getChatsList(userData.id);
+    const chatIds = await getChatsList(userData?.id);
     const chatDataPromises = chatIds.map(async (chatId: string) => {
       const messages = await getMenssagesList(chatId);
       return { chatId, messages };
@@ -64,18 +72,26 @@ export function ContextProvider({children}:any) {
     setChatList([...chatList,chatData]);
   }
   
+  async function getStorageUser(params:type) {
+    const jsonValue = await AsyncStorage.getItem('@userData')
+    console.log(jsonValue);
+    
+    return setUserData(jsonValue != null ? JSON.parse(jsonValue) : null)
+  }
+
   useEffect(() => {
+    getStorageUser()
     testConnection()
-     if (userData !== null) {
-       
-       getChatData()
-     }
-  },[userData])
+    if (userData !== null) {
+      getChatData()
+    }
+  },[])
 
   return (
     <ContextArea.Provider value={{
-      userData,
-      handleAuthContext
+      userData,chatList,
+      handleAuthContext,
+      getChatData
     }}>
       {children}
     </ContextArea.Provider>

@@ -1,20 +1,35 @@
 import { Text, View, Input, InputField, Spinner, FlatList, Box, HStack, VStack, Button, ButtonText, AddIcon, ButtonIcon, Icon, TrashIcon } from "@gluestack-ui/themed";
-import { useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UserProps } from "../context/intefaces";
+import { ContextArea } from "../context/context";
+import { baseUser } from "../context/api";
+import axios from "axios"
 
 export function Home() {
+  const { userData, getChatData } = useContext(ContextArea)
   const [search,setSearch] = useState<string>("")
-  const [chatList,setChatList] = useState<null | UserProps[] >(null)
+  const [peopleList,setPeopleList] = useState<UserProps[] | null>(null)
+
+  async function findUser() {
+    try{  
+      axios.get(baseUser.findUser(search))
+      .then((res)=>setPeopleList(res.data))
+      .catch(err =>{
+        console.log(err)
+        return null
+      });
+    } catch (err) {
+      return console.log(err)
+    }
+  }
 
   useEffect(()=>{
-    search.length = 0 ?
-    setChatList() :
-    setChatList()
-  }, [chatList])
+    search.length == 0 ? setPeopleList(getChatData()) : findUser()
+  }, [search])
 
   return(
     <View p={10} h="100%">
-      <Text>Home</Text> <br/>
+      <Text>Home</Text>
       <Input
         variant="outline"
         size="lg"
@@ -31,12 +46,12 @@ export function Home() {
           <ButtonIcon as={TrashIcon} />
         </Button>
         }
-      </Input> <br/>
-      {chatList == null ? 
+      </Input> 
+      {peopleList == null ? 
         <Spinner size="large" my="auto" />
         :
         <FlatList
-          data={chatList}
+          data={peopleList}
           showsVerticalScrollIndicator={false}
           renderItem={({item}:any) => (
             <Box
