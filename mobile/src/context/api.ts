@@ -1,7 +1,12 @@
-import axios from "axios"
-import { UserProps } from "./intefaces"
+import axios from 'axios'
 
-const baseUrl = "https://improved-space-funicular-grw6qxq6pqg3wpgr-3000.app.github.dev/"
+export const baseUrl = "http://192.168.0.103:3000/"
+
+export const baseAuth = {
+  login: baseUrl + "auth/login",       
+  register: baseUrl + "auth/register",
+  delete: baseUrl + "auth/deleteUser",
+}
 
 export const baseChat = {
   getChat: (userId:string)=>baseUrl + 'chats/userChat/'+userId,
@@ -27,7 +32,8 @@ export async function testConnection() {
 
 export async function createChat(user1Id:string, user2Id:string){
   try{  
-    axios.get(baseUser.createChat,{user1Id: user1Id, user2Id: user2Id })
+    const data = {user1Id: user1Id, user2Id: user2Id }
+    axios.get(baseUser.createChat,data)
     .then((res)=>res.data)
     .catch(err =>{
       console.log(err)

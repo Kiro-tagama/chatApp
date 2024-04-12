@@ -6,7 +6,7 @@ interface PropsToast{
   message: string
 }
 
-export function MyToast({id,type,message}) {
+export function MyToast({id,type,message}:PropsToast) {
   const toastActions = {
     info:{
       actionType: "info",
@@ -30,7 +30,8 @@ export function MyToast({id,type,message}) {
     },
   }
   return (
-    <Toast nativeID={"toast-" + id} variant="accent"  action={toastActions[type].actionType}>
+    <Toast nativeID={"toast-" + id} variant="accent" marginTop={"50%"}  
+    action={toastActions[type].actionType || "attention"}>
       <VStack space="xs">
         <ToastTitle>{toastActions[type].actionType}</ToastTitle>
         <ToastDescription >{message}</ToastDescription>

@@ -1,32 +1,34 @@
-import { createContext, useEffect, useState } from "react";
+import { ReactNode, SetStateAction, createContext, useEffect, useState } from "react";
 import { MessageProps, UserProps } from "./intefaces";
-import { getChatsList, getMenssagesList, testConnection } from "./api";
+import { baseAuth, getChatsList, getMenssagesList, testConnection } from "./api";
 import { useToast } from '@gluestack-ui/themed';
 import { MyToast } from '../components/Toast'
 import axios from "axios"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const ContextArea= createContext({})
-
-interface ChatProps{
+interface PropsChat{
   chatId:string
   content: MessageProps[]
 }
 
-export function ContextProvider({children}:any) {
+interface PropsContext{
+  userData: UserProps|null
+  chatList: PropsChat[]
+  handleAuthContext:(type: "login"|"register"|"delete",data: UserProps)=> void
+  getChatData: ()=> void
+  logout: ()=> void
+}
+
+// @ts-ignore
+export const ContextArea= createContext<PropsContext>({})
+
+export function ContextProvider({children}:{children:ReactNode}) {
   const [userData, setUserData] = useState<UserProps|null>(null)
-  const [chatList, setChatList] = useState<ChatProps[]>([])
+  const [chatList, setChatList] = useState<PropsChat[]|null>()
 
   const toast = useToast()
 
   async function handleAuthContext(type: "login"|"register"|"delete",data: UserProps){
-    const baseUrl = "https://improved-space-funicular-grw6qxq6pqg3wpgr-3000.app.github.dev/"
-    const baseAuth = {
-      login: baseUrl + "auth/login",        //get 
-      register: baseUrl + "auth/register",  //post
-      delete: baseUrl + "auth/deleteUser",  //delete
-    }
-
     try {
       const method = {
         login: "get",
@@ -38,7 +40,7 @@ export function ContextProvider({children}:any) {
       
       // @ts-ignore
       await axios[method[type]](url, type === "login" ? null : data)
-      .then(async res=>{
+      .then(async (res: { data: SetStateAction<UserProps | null>; })=>{
         if (type === "login") {
           const jsonData =JSON.stringify(res.data)
           await AsyncStorage.setItem('@userData', jsonData);
@@ -62,6 +64,11 @@ export function ContextProvider({children}:any) {
     }
   }
 
+  function logout() {
+    setUserData(null)
+    AsyncStorage.removeItem('@userData')
+  }
+
   async function getChatData() {
     const chatIds = await getChatsList(userData?.id);
     const chatDataPromises = chatIds.map(async (chatId: string) => {
@@ -72,10 +79,8 @@ export function ContextProvider({children}:any) {
     setChatList([...chatList,chatData]);
   }
   
-  async function getStorageUser(params:type) {
+  async function getStorageUser() {
     const jsonValue = await AsyncStorage.getItem('@userData')
-    console.log(jsonValue);
-    
     return setUserData(jsonValue != null ? JSON.parse(jsonValue) : null)
   }
 
@@ -91,7 +96,8 @@ export function ContextProvider({children}:any) {
     <ContextArea.Provider value={{
       userData,chatList,
       handleAuthContext,
-      getChatData
+      getChatData,
+      logout
     }}>
       {children}
     </ContextArea.Provider>

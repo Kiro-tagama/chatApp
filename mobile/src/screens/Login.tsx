@@ -1,10 +1,9 @@
-import { Button, ButtonText, Center, Divider, Input, InputField, Text } from "@gluestack-ui/themed";
+import { Button, ButtonIcon, ButtonText, Center, Divider, EyeIcon, EyeOffIcon, Input, InputField, Text } from "@gluestack-ui/themed";
 import { useContext, useState } from "react";
 import { UserProps } from "../context/intefaces";
 import { ContextArea } from "../context/context";
 
 export function Login() {
-
   const { handleAuthContext } = useContext(ContextArea)
 
   const [type, setType] = useState<"Login"|"Register">("Login");
@@ -14,13 +13,14 @@ export function Login() {
     email: "",
     password: ""
   })
+  const [securetyPassword,setSecuretyPassword] = useState<boolean>(true)
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const emailValid = emailRegex.test(data.email) ? false : true
 
   return(
-    <Center h='100%' p='$10' gap={10}>
-      <Text size="xl">{type}</Text>
+    <Center h='100%' p='$2' gap={10}>
+      <Text size="xl" marginBottom={20}>{type}</Text>
       {type === "Login" ? null : 
         <Input
           variant="outline"
@@ -55,10 +55,15 @@ export function Login() {
         <InputField 
           value={data.password} 
           onChangeText ={txt=>setData({...data,password:txt})} 
-          placeholder="Enter Password" secureTextEntry={true}/>
+          placeholder="Enter Password" secureTextEntry={securetyPassword}/>
+        <Button size="md" mx="$2" variant="link" action="secondary"
+          onPress={()=>setSecuretyPassword(!securetyPassword)}
+        >
+          <ButtonIcon as={securetyPassword? EyeIcon : EyeOffIcon} />
+        </Button>
       </Input>
       
-      <Button size="lg" w="90%" variant="solid" action="primary" isFocusVisible={false} 
+      <Button size="lg" w="90%" marginTop={20} variant="solid" action="primary" isFocusVisible={false} 
         onPress={()=>{handleAuthContext(type.toLocaleLowerCase(), data)}}
       >
         <ButtonText>{type}</ButtonText>
